@@ -1,11 +1,11 @@
 {
   "name": "backand",
-  "type": "commonjs",
+  "type": "module",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "node server.cjs",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
