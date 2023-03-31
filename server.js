@@ -10,33 +10,33 @@ import orderRouter from './routes/orderRouters.js';
 
 dotenv.config();
 
-// mongoose
-//   .connect(process.env.MONGODB_URI)
-//   .then(() => {
-//     console.log('coonect to db');
-//   })
-//   .catch((err) => {
-//     console.log(err.message);
-//   });
+mongoose
+  .connect(process.env.MONGODB_URI)
+  .then(() => {
+    console.log('coonect to db');
+  })
+  .catch((err) => {
+    console.log(err.message);
+  });
 
-exports.handler = (event, context, callback) => {
-  mongoose
-    .connect(process.env.MONGODB_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      useCreateIndex: true,
-      useFindAndModify: false,
-    })
-    .then(() => {
-      // Panggil metode listen di dalam then() callback
-      app.listen(process.env.PORT, () => {
-        console.log(`Server started on port ${process.env.PORT}`);
-      });
-    })
-    .catch((err) => {
-      console.error(err);
-    });
-};
+// exports.handler = (event, context, callback) => {
+//   mongoose
+//     .connect(process.env.MONGODB_URI, {
+//       useNewUrlParser: true,
+//       useUnifiedTopology: true,
+//       useCreateIndex: true,
+//       useFindAndModify: false,
+//     })
+//     .then(() => {
+//       // Panggil metode listen di dalam then() callback
+//       app.listen(process.env.PORT, () => {
+//         console.log(`Server started on port ${process.env.PORT}`);
+//       });
+//     })
+//     .catch((err) => {
+//       console.error(err);
+//     });
+// };
 
 const app = express();
 
