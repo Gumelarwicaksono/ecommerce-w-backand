@@ -1,6 +1,7 @@
 import express, { query } from 'express';
 import expressAsyncHandler from 'express-async-handler';
 import Product from '../models/productModel.js';
+import { isAuth } from '../utils.js';
 
 const productRouter = express.Router();
 
@@ -22,13 +23,6 @@ productRouter.get(
     res.send(categories);
   })
 );
-// productRouter.get(
-//   '/categories',
-//   expressAsyncHandler(async (req, res) => {
-//     const categories = await Product.aggregate([{ $group: { _id: { $toLower: '$category' } } }]);
-//     res.send(categories.map((cat) => cat._id));
-//   })
-// );
 
 // =============
 // default 1 page
@@ -118,7 +112,7 @@ productRouter.get('/slug/:slug', async (req, res) => {
     res.status(404).send({ message: 'Product Not Found' });
   }
 });
-
+// ================ show : id =======================================================
 productRouter.get('/:id', async (req, res) => {
   const product = await Product.findById(req.params.id);
 
@@ -128,5 +122,54 @@ productRouter.get('/:id', async (req, res) => {
     res.status(404).send({ message: 'Product Not Found' });
   }
 });
+// ============= create ==========================================================
+productRouter.post(
+  '/',
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    const product = new Product(req.body);
+    try {
+      const newProduct = await product.save();
+      res.status(201).json(newProduct);
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
+  })
+);
+
+//========== update =============================================================
+productRouter.put(
+  '/:id',
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    try {
+      const product = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true });
+      if (!product) {
+        return res.status(404).json({ message: 'Product not found' });
+      }
+      res.status(200).json(product);
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
+  })
+);
+
+// ================ deleted =======================================================
+
+productRouter.delete(
+  '/:id',
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    try {
+      const product = await Product.findByIdAndDelete(req.params.id);
+      if (!product) {
+        return res.status(404).json({ message: 'Product not found' });
+      }
+      res.status(204).send();
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  })
+);
 
 export default productRouter;
